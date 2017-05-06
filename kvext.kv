@@ -1,0 +1,35 @@
+# Use with:
+# - #:include kvext.kv
+# - #:include "full path to file.kv"
+
+#:set __KV_EXT_V__ (0, 0, 1)
+
+# to eat the return of list comprehension
+#:set _eat lambda *a, **kw: None
+
+# simple for loop (repeat N-times):
+# - range parameter
+# - function object
+# - optional args, optional kwargs
+#:set _for lambda N, c, a=(), kw={}: _eat([c(*a, **kw) for i in range(N)])
+
+# extended for loop (call N-times):
+# - range parameter
+# - function object
+# - optional args, optional kwargs
+#:set _forc lambda N, c, a, kw={}: _eat([c(a(**kw), **kw) for i in range(N)])
+
+# add a single widget N times with an optional kwargs dict:
+# - parent instance, range parameter, widget class
+# - optional kwargs
+# no pure args are necessary as they aren't used anyway
+#:set _forw lambda p, N, wdg, kw={}: _eat([p.add_widget(wdg(**kw)) for i in range(N)])
+
+# add multiple widgets from a list consisting of:
+# - widget class
+# - kwargs dictionary
+# at least empty kwargs dictionary is necessary
+#:set _forws lambda p, wdgs=[]: _eat([p.add_widget(wdgs[i][0](**wdgs[i][1])) for i in range(len(wdgs))])
+
+# swap two widget instances between themselves
+#:set _swapw lambda a, b: _eat([setattr(a, '__swap_ib', b.parent.children.index(b)),setattr(a, '__swap_ia', a.parent.children.index(a)),b.parent.remove_widget(b), a.parent.add_widget(b, a.__swap_ia),a.parent.remove_widget(a), b.parent.add_widget(a, a.__swap_ib),delattr(a, '__swap_ia'), delattr(a, '__swap_ib'),])
